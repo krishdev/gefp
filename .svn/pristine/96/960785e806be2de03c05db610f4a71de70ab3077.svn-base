@@ -1,0 +1,55 @@
+package gefp.model;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "FP_Stage")
+public class FP_Stage {
+
+	@Id
+    @GeneratedValue
+    @Column(name="fpstid")
+	private int fpstid;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	private FlightPlanDetails flpid;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	private StageDetails stgid;
+	
+	public FP_Stage(){
+		
+	}
+
+	public int getFpstid() {
+		return fpstid;
+	}
+
+	public void setFpstid(int fpstid) {
+		this.fpstid = fpstid;
+	}
+
+	public FlightPlanDetails getFlpid() {
+		return flpid;
+	}
+
+	public void setFlpid(FlightPlanDetails flpid) {
+		this.flpid = flpid;
+	}
+
+	public StageDetails getStgid() {
+		return stgid;
+	}
+
+	public void setStgid(StageDetails stgid) {
+		this.stgid = stgid;
+	}
+
+	
+}

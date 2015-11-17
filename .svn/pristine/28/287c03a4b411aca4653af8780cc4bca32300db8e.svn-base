@@ -1,0 +1,61 @@
+package gefp.model;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "FP_Runway")
+public class FP_Runway {
+
+	@Id
+    @GeneratedValue
+    @Column(name="fprunid")
+	private Integer fprunid;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	private FlightPlanDetails flpid;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	private RunwayDetails runid;
+	
+	public FP_Runway(){
+		
+	}
+
+	
+
+	public Integer getFprunid() {
+		return fprunid;
+	}
+
+
+
+	public void setFprunid(Integer fprunid) {
+		this.fprunid = fprunid;
+	}
+
+
+
+	public FlightPlanDetails getFlpid() {
+		return flpid;
+	}
+
+	public void setFlpid(FlightPlanDetails flpid) {
+		this.flpid = flpid;
+	}
+
+	public RunwayDetails getRunid() {
+		return runid;
+	}
+
+	public void setRunid(RunwayDetails runid) {
+		this.runid = runid;
+	}
+	
+	
+}

@@ -1,0 +1,90 @@
+
+package gefp.model.dao;
+
+import gefp.model.Combination;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.testng.annotations.Test;
+
+@Test(groups = "UserDaoTest")
+@ContextConfiguration(locations = "classpath:applicationContext.xml")
+public class StuDtest extends AbstractTransactionalTestNGSpringContextTests{
+
+	
+	@Autowired
+	StuDdao studdao;
+	
+	@Autowired
+	Checkptdao chkdao;
+	
+	@Autowired
+	Combintaiondao combdao;
+	
+	@Test
+	public void getStuDdetail()
+	{
+		System.out.println("Test Case 1");
+		System.out.println("Students:" + studdao.getStudbyname("jdoe1").getUsername() + " and " + studdao.getStudbyname("jdoe2").getUsername());
+		System.out.println("are present");
+		System.out.println( studdao.getStuDdetail(1001).getUsername().equalsIgnoreCase("jdoe1"));
+		
+			
+		assert studdao.getStudbyname("jdoe1").getUsername().equalsIgnoreCase("jdoe1");
+		assert studdao.getStudbyname("jdoe2").getUsername().equalsIgnoreCase("jdoe2");
+	}
+	
+	
+	
+	/*@Test
+	public void getStuDdetailCheckpointforjdoe1()
+	{
+		List<Combination> combisize = combdao.getsizeofcombinationsforusers(studdao.getStudbyname("jdoe1"));
+		List<Combination> combi = combdao.getcombinationids(studdao.getStudbyname("jdoe1"));
+		System.out.println("Total checkpoints present for Jdoe1: "+combisize.size()+"Total checkpoints checked for Jdoe1: "+combi.size());
+		for(int i=0;i<combi.size();i++){
+			for(int j=0;j<combisize.size();j++){
+				assert studdao.getStudbyname("jdoe1").getDeptdetails().getFlpid().getComb().size() == 1;
+				//System.out.println("Answer for jdoe1:  " + studdao.getStudbyname("jdoe1").getDeptdetails().getFlpid().getComb().get(i).getChkdt().getCName());
+
+			}
+			
+		}
+		
+	}*/
+	
+	@Test
+	public void getstudetailifchk(){
+		//Showing the checkpoints
+		List<Combination> combisize = combdao.getsizeofcombinationsforusers(studdao.getStudbyname("jdoe1"));
+		List<Combination> combi = combdao.getcombinationids(studdao.getStudbyname("jdoe1"));
+		System.out.println("Total checkpoints present for Jdoe1: "+combisize.size()+" Number of checkpoints checked for Jdoe1: "+combi.size());
+		for(int i=0;i<combi.size();i++){
+			
+			System.out.println("Checkpoint which is checked is:  " + studdao.getStudbyname("jdoe1").getMajor().getFlpid().getComb().get(i).getChkdt().getCName());
+		}
+		//test case
+		assert studdao.getstudetailifchk("jdoe1",true).size()==1;
+	}
+	
+	@Test
+	public void getStuDdetailCheckpointforjdoe2()
+	{
+		//Showing the checkpoints
+				List<Combination> combisize = combdao.getsizeofcombinationsforusers(studdao.getStudbyname("jdoe2"));
+				List<Combination> combi = combdao.getcombinationids(studdao.getStudbyname("jdoe2"));
+				System.out.println("Total checkpoints present for jdoe2: "+combisize.size()+" Number of checkpoints checked for jdoe2: "+combi.size());
+				for(int i=0;i<combi.size();i++){
+					
+					System.out.println("Checkpoint which is checked are:  " + studdao.getStudbyname("jdoe2").getMajor().getFlpid().getComb().get(i).getChkdt().getCName());
+				}
+				//test case
+		assert studdao.getstudetailifchk("jdoe2",true).size() == studdao.getstudetailifchkforjdoe2("jdoe2").size();
+		
+		
+	}
+
+}

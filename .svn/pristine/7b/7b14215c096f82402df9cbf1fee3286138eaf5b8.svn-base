@@ -1,0 +1,107 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+            <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Administrator-View-Department Plan</title>
+<link href="css/indexgefp.css" rel="stylesheet">
+</head>
+<body>
+
+	<div class="center">
+	 <c:choose>
+   
+    <c:when test="${empty username }">
+    <div align="center"> User Not Valid <a href="gefpLogin.html"> Login Again</a> </div>
+    </c:when>
+    <c:otherwise>
+    
+   
+	<div align="center">
+    <img src="images/header.png">
+       
+    <div  id="menu"> 
+    <ul>
+<li><a href="planHome.html">Home</a></li>
+<li>
+</li><li></li><li></li><li></li><li></li>	
+<li><a href="logout.html">Logout</a></li>
+</ul>
+
+    </div>
+    </div>
+   
+    <form:form commandName="storesForm" method="post">
+    <div style="margin-left:10%;width:100%">
+		<div>
+		<br/>
+		<br/>
+		 <c:choose>
+   
+    <c:when test="${utype=='ADMINISTRATOR'}">
+		<a href="addOptions.html?btn=Stage&planid=${flplanid}"> Add Stage </a> | <a href="addRunway.html?btn=Runway&planid=${flplanid}"> Add Runway </a> | <a href="addCheckpoint.html?btn=Checkpoint&planid=${flplanid}"> Add Checkpoint</a>
+	</c:when>
+	<c:otherwise>
+	
+	</c:otherwise>
+	</c:choose>
+	<table id="pland">
+		<th>
+		</th>
+		<c:forEach items="${planrunwaydetails}" var="planrunwaydetail">
+		
+		<th>
+		
+		${planrunwaydetail.runway}
+		</th>
+		</c:forEach>
+	<c:forEach items="${planstagedetails}" var="planstagedetail">
+		
+		<tr>
+		
+	<td class="alt">
+			<span style="font-size: 10pt;font-weight: bold;">${planstagedetail.sname}</span>	 
+			</td>						
+			<c:forEach items="${planrunwaydetails}" var="planrunwaydetail">
+			
+			
+			<td>
+				<c:forEach items="${cells}" var="cell">
+				<c:if test="${planstagedetail.stageid eq cell.sid}">
+			<c:if test="${planrunwaydetail.runid eq cell.runid}">
+				<input type="checkbox">
+				<span>
+					${cell.chkpt}
+					
+				</span>
+				 <c:choose>
+   
+    <c:when test="${utype=='ADMINISTRATOR'}">
+				<a href="editCheckpoint.html?cellid=${cell.cellid}&stageid=${cell.sid}&runwayid=${cell.runid}&planid=${flplanid}&chkid=${cell.chkid}">[Edit]</a><br/>
+	</c:when>
+	<c:otherwise>
+	
+	</c:otherwise>
+	</c:choose>				
+				</c:if>
+			</c:if>
+			</c:forEach>
+			</td>
+			
+			</c:forEach>					
+		</tr>
+	</c:forEach>
+			
+	</table>
+	</div>
+	</div>
+	</form:form>
+	 </c:otherwise>
+    
+    </c:choose>
+</div>
+</body>
+</html>

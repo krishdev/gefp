@@ -1,0 +1,166 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+         <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+ <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Home</title>
+<link href="../css/indexgefp.css" rel="stylesheet">
+<style type="text/css">
+
+.collapse{
+  font-size: 16px;
+  color:blue;
+  display:block;
+cursor: pointer;
+}
+.collapse + input{
+  display:none;
+}
+.collapse + input + *{
+  display:none;
+}
+.collapse+ input:checked + *{
+  display:block;
+}
+/**/
+
+body
+{
+    counter-reset: Serial;           /* Set the Serial counter to 0 */
+}
+
+table
+{
+    border-collapse: separate;
+}
+
+tr td:first-child:before
+{
+  counter-increment: Serial;      /* Increment the Serial counter */
+  content: " " counter(Serial); /* Display the counter */
+}
+</style>
+</head>
+<body>
+	
+
+	<div class="center">
+
+	<div align="center">
+    <img src="../images/header.png">
+       
+   
+    <div  id="menu"> 
+    <ul>
+<li><a href="#">Home</a></li>
+<li></li><li></li><li></li><li></li><li></li><li></li>	
+<li><a href="<c:url value='/j_spring_security_logout'/>">Logout</a></li>
+</ul>
+
+    </div>
+    </div>
+    <div style="margin-left:20%">
+    <h3 align="left">Welcome <security:authentication property="principal.name" /></h3>
+			<br/>
+			<br/>
+      <div>   
+      <form action="planHome.html" method="post">   
+       <span>Choose the department</span> 	
+			<select class="dropdown" name="deptid">
+						<c:forEach items="${deptnames}" var="dept">
+							<option value="${dept.deptid}"><c:out value="${dept.departmentName}"/>
+							
+							</option>	
+											
+						</c:forEach>
+					</select>
+		
+			<input type="submit" name="ok" class="myButton" value="OK">
+			</form>
+			</div>
+				<br/>
+				<br/>
+			<c:choose>
+				<c:when test="${empty flpdetail}">
+				
+				</c:when>
+				<c:otherwise>
+				Department:${deptnamess}
+					<table id="plan">
+						<th>
+						Sl.No
+						</th>
+						<th>
+						Plan Name
+						</th>
+						<th>
+						View
+						</th>
+						<th>
+						Assign Official Plan
+						</th>
+						<c:forEach items="${flpdetail}" var="flp">
+						<tr>
+							
+							<td>
+								
+							</td>
+							<td>
+								${flp.name}
+							</td>
+							<td>
+								<a href="searchPlan.html?ok=VIEW&planid=${flp.id}" class="ahref">View</a>
+							</td>
+							<td>
+							<c:choose>
+								<c:when test="${currentplan eq flp.id}">
+								Official plan of department.
+								</c:when>
+							
+								<c:otherwise>
+								<a href="defaultPlan.html?deptid=${deptid}&planid=${flp.id}" class="ahref">Assign</a>
+								
+								</c:otherwise>
+							</c:choose>
+								
+							</td>							
+						</tr>
+						</c:forEach>
+					</table>
+					
+				<form action="addPlan.html" method="post">	
+								<div>
+								<c:choose>
+						<c:when test="${empty errorplan}">
+						
+						</c:when>
+						<c:otherwise>
+						<label>Plan name shouldn't be empty</label>
+						</c:otherwise>
+					</c:choose>
+					<label class="collapse" for="_1"> Add A Plan </label>
+				
+				
+					  <input id="_1" type="checkbox">
+					  <div> <span>Plan Name: </span> 
+					  <input type="text" name="planname">
+					  <input type="hidden" name="deptid" value="${deptid}">
+					  <input type="submit" name="addplan" value="ADD" >
+					  </div>
+					
+					</div>
+</form>	
+
+				</c:otherwise>
+			</c:choose>								
+							
+ 	</div>
+
+</div>
+
+</body>
+</html>

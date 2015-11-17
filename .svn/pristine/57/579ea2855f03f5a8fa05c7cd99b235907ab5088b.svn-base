@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="3" passed="3">
+  <reporter-output>
+  </reporter-output>
+  <suite name="gefp.model.dao.StuDTest" duration-ms="11210" started-at="2015-03-06T01:58:41Z" finished-at="2015-03-06T01:58:53Z">
+    <groups>
+      <group name="UserDaoTest">
+        <method signature="StuDTest.getStuDdetail()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="getStuDdetail" class="gefp.model.dao.StuDTest"/>
+        <method signature="StuDTest.getStuDdetailCheckpointforjdoe2()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="getStuDdetailCheckpointforjdoe2" class="gefp.model.dao.StuDTest"/>
+        <method signature="StuDTest.getstudetailifchk()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="getstudetailifchk" class="gefp.model.dao.StuDTest"/>
+      </group> <!-- UserDaoTest -->
+    </groups>
+    <test name="Command line test 1f5a04e7-92b4-49dd-a5fe-ed551e3cf014" duration-ms="11210" started-at="2015-03-06T01:58:41Z" finished-at="2015-03-06T01:58:53Z">
+      <class name="gefp.model.dao.StuDTest">
+        <test-method status="PASS" signature="springTestContextBeforeTestClass()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextBeforeTestClass" is-config="true" duration-ms="27" started-at="2015-03-05T17:58:42Z" finished-at="2015-03-05T17:58:42Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestClass -->
+        <test-method status="PASS" signature="springTestContextPrepareTestInstance()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextPrepareTestInstance" is-config="true" duration-ms="9702" started-at="2015-03-05T17:58:42Z" depends-on-methods="org.springframework.test.context.testng.AbstractTestNGSpringContextTests.springTestContextBeforeTestClass" finished-at="2015-03-05T17:58:51Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextPrepareTestInstance -->
+        <test-method status="PASS" signature="springTestContextBeforeTestMethod(java.lang.reflect.Method)[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextBeforeTestMethod" is-config="true" duration-ms="473" started-at="2015-03-05T17:58:51Z" finished-at="2015-03-05T17:58:52Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void gefp.model.dao.StuDTest.getStuDdetail()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestMethod -->
+        <test-method status="PASS" signature="getStuDdetail()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="getStuDdetail" duration-ms="740" started-at="2015-03-05T17:58:52Z" finished-at="2015-03-05T17:58:52Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- getStuDdetail -->
+        <test-method status="PASS" signature="springTestContextAfterTestMethod(java.lang.reflect.Method)[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextAfterTestMethod" is-config="true" duration-ms="20" started-at="2015-03-05T17:58:52Z" finished-at="2015-03-05T17:58:52Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void gefp.model.dao.StuDTest.getStuDdetail()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestMethod -->
+        <test-method status="PASS" signature="springTestContextBeforeTestMethod(java.lang.reflect.Method)[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextBeforeTestMethod" is-config="true" duration-ms="4" started-at="2015-03-05T17:58:52Z" finished-at="2015-03-05T17:58:53Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void gefp.model.dao.StuDTest.getStuDdetailCheckpointforjdoe2()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestMethod -->
+        <test-method status="PASS" signature="getStuDdetailCheckpointforjdoe2()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="getStuDdetailCheckpointforjdoe2" duration-ms="97" started-at="2015-03-05T17:58:53Z" finished-at="2015-03-05T17:58:53Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- getStuDdetailCheckpointforjdoe2 -->
+        <test-method status="PASS" signature="springTestContextAfterTestMethod(java.lang.reflect.Method)[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextAfterTestMethod" is-config="true" duration-ms="7" started-at="2015-03-05T17:58:53Z" finished-at="2015-03-05T17:58:53Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void gefp.model.dao.StuDTest.getStuDdetailCheckpointforjdoe2()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestMethod -->
+        <test-method status="PASS" signature="springTestContextBeforeTestMethod(java.lang.reflect.Method)[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextBeforeTestMethod" is-config="true" duration-ms="10" started-at="2015-03-05T17:58:53Z" finished-at="2015-03-05T17:58:53Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void gefp.model.dao.StuDTest.getstudetailifchk()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestMethod -->
+        <test-method status="PASS" signature="getstudetailifchk()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="getstudetailifchk" duration-ms="78" started-at="2015-03-05T17:58:53Z" finished-at="2015-03-05T17:58:53Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- getstudetailifchk -->
+        <test-method status="PASS" signature="springTestContextAfterTestMethod(java.lang.reflect.Method)[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextAfterTestMethod" is-config="true" duration-ms="4" started-at="2015-03-05T17:58:53Z" finished-at="2015-03-05T17:58:53Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void gefp.model.dao.StuDTest.getstudetailifchk()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestMethod -->
+        <test-method status="PASS" signature="springTestContextAfterTestClass()[pri:0, instance:gefp.model.dao.StuDTest@13805618]" name="springTestContextAfterTestClass" is-config="true" duration-ms="1" started-at="2015-03-05T17:58:53Z" finished-at="2015-03-05T17:58:53Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestClass -->
+      </class> <!-- gefp.model.dao.StuDTest -->
+    </test> <!-- Command line test 1f5a04e7-92b4-49dd-a5fe-ed551e3cf014 -->
+  </suite> <!-- gefp.model.dao.StuDTest -->
+</testng-results>

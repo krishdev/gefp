@@ -1,0 +1,203 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+         <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+         <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+         
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Edit Profile</title>
+<link href="../css/indexgefp.css" rel="stylesheet">
+<link href="../css/profile.css" rel="stylesheet">
+
+<script type="text/javascript">
+function checkForm(form)
+{
+	if(form.email.value !=""){
+		re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		if(!re.test(form.email.value))
+			{
+			alert("Error: Please enter a valid email id!");
+		      form.email.focus();
+		      return false;
+			}
+		}
+	if(form.pwd1.value == ""){
+		if(confirm("Not willing to change password")==true){
+		return true;}
+		else return false;
+	}
+	
+if( form.pwd1.value == form.pwd2.value) {
+    if(form.pwd1.value.length < 4) {
+      alert("Error: Password must contain at least four characters!");
+      form.pwd1.focus();
+      return false;
+    }
+    
+    re = /[0-9]/;
+    if(!re.test(form.pwd1.value)) {
+      alert("Error: password must contain at least one number (0-9)!");
+      form.pwd1.focus();
+      return false;
+    }
+    re = /[a-zA-Z]/;
+    if(!re.test(form.pwd1.value)) {
+      alert("Error: password must contain at least one alphabet");
+      form.pwd1.focus();
+      return false;
+    }
+    
+  } else {
+    alert("Error: Please check that you've confirmed your password!");
+    form.pwd1.focus();
+    return false;
+  }
+  return true;
+}
+
+</script>
+
+</head>
+<body>
+<div class="center">
+<form:form modelAttribute="users" onsubmit="return checkForm(this);">
+
+								<security:authorize access="hasRole('ROLE_STUDENT')">
+
+    <div align="center">
+    <img src="../images/header.png">
+       
+    <div  id="menu"> 
+    <ul>
+
+<li>
+			<a href="#">Home</a>
+			<ul>
+				<security:authorize access="hasRole('ROLE_ADVISOR')">
+				<li>
+				<a href="/gefp/advi/advisor.html">Advisor</a>
+				</li> 
+				</security:authorize>
+				<security:authorize access="hasRole('ROLE_STUDENT')">
+				<li>
+				<a href="viewPlan.html?stuid=${stud}&planid=${plan}">Student</a>
+				</li>
+				</security:authorize>
+			</ul>
+		</li>
+</li><li></li><li><a href="profile.html">PROFILE</a></li><li></li><li></li>	
+<li><a href="<c:url value='/j_spring_security_logout'/>">Logout</a></li>
+</ul>
+
+    </div>
+    </div>
+    <br/><br/><br/>
+<div style="margin-left: 12%" class="profile">
+
+	<table>
+	<tr><!-- Name -->
+	<td>
+	<span class="txt">Name</span>
+	</td>
+	<td>
+	<span class="txt">${users.name} </span>
+	<form:hidden path="name"/>
+	<form:hidden path="id"/>
+	<form:hidden path="username"/>
+	<form:hidden path="roles"/>
+	<form:hidden path="password"/>
+	
+	<form:hidden path="cin"/>
+	</td>
+	</tr>
+	
+	<tr><!-- CIN -->
+	<td>
+	<span class="txt">CIN</span>
+	</td>
+	<td>
+	<span class="txt">${users.cin} </span>
+	</td>
+	</tr>
+	
+	<tr><!-- Department -->
+	<td>
+	<span class="txt">DEPARTMENT</span>
+	</td>
+	<td>
+	<select class="dropdown" name="deptid">
+						<c:forEach items="${deptnames}" var="dept">
+							<option value="${dept.deptid}" ${dept.deptid == cdpt ? 'selected="selected"':'' }><c:out value="${dept.departmentName}"/>
+							
+							</option>	
+											
+						</c:forEach>
+					</select>
+	
+	
+	</td>
+	</tr>
+	
+	<tr><!-- Email -->
+	<td>
+	<span class="txt">EMAIL</span>
+	</td>
+	<td>
+	<form:input id="email" path="email"/>
+	</td>
+	</tr>
+	
+	<tr><!-- Phone -->
+	<td>
+	<span class="txt">PHONE NUM</span>
+	</td>
+	<td>
+	<form:input path="phno"/>
+	</td>
+	</tr>
+	
+	<tr><!-- City -->
+	<td>
+	<span class="txt">CITY</span>
+	</td>
+	<td>
+	<form:input path="city"/>
+	</td>
+	</tr>
+	
+	<tr><!-- Password -->
+	<td>
+	<span class="txt">Password</span>
+	</td>
+	<td>
+	<form:password id="pwd1" path="password1"/><form:errors path="password1"/>
+	</td>
+	</tr>
+	
+	<tr><!--Confirm Password -->
+	<td>
+	<span class="txt">Retype Password</span>
+	</td>
+	<td>
+	<form:password id="pwd2" path="password2"/>
+	</td>
+	</tr>
+	
+	<tr><!-- Submit -->
+	<td>
+	</td>
+	<td>
+	<input type="submit" name="editprofile" value="Edit">
+	</td>
+	</tr>
+	</table>
+	
+</div>
+	</security:authorize>
+</form:form>
+</div>	
+</body>
+</html>

@@ -1,0 +1,290 @@
+
+    create table ChkPtDetails (
+        cid int4 not null,
+        CName varchar(255),
+        cdlt boolean not null,
+        chkmark boolean,
+        filepath varchar(255),
+        typeoffile varchar(255),
+        primary key (cid)
+    );
+
+    create table CombinationTable (
+        Comid int4 not null,
+        chker boolean not null,
+        cid int4,
+        flpd_id int4,
+        rid int4,
+        Sid int4,
+        primary key (Comid)
+    );
+
+    create table Departmentdetails (
+        deptid int4 not null,
+        DepartmentName varchar(255),
+        id int4,
+        primary key (deptid)
+    );
+
+    create table FP_Runway (
+        fprunid int4 not null,
+        flpid_id int4,
+        runid_rid int4,
+        primary key (fprunid)
+    );
+
+    create table FP_Stage (
+        fpstid int4 not null,
+        flpid_id int4,
+        stgid_Sid int4,
+        primary key (fpstid)
+    );
+
+    create table FlightPlanDetails (
+        id int4 not null,
+        ennabled boolean not null,
+        name varchar(255),
+        primary key (id)
+    );
+
+    create table Role (
+        id int4 not null,
+        name varchar(255),
+        primary key (id)
+    );
+
+    create table Role_Users (
+        Role_id int4 not null,
+        users_id int4 not null,
+        primary key (Role_id, users_id)
+    );
+
+    create table RunwayDetails (
+        rid int4 not null,
+        RName varchar(255),
+        rdlt boolean not null,
+        primary key (rid)
+    );
+
+    create table StageDetails (
+        Sid int4 not null,
+        SName varchar(255),
+        sdlt boolean not null,
+        primary key (Sid)
+    );
+
+    create table Users (
+        id int4 not null,
+        enabled boolean not null,
+        name varchar(255),
+        password varchar(255),
+        roles varchar(255),
+        username varchar(255),
+        major_deptid int4,
+        plan_id int4,
+        primary key (id)
+    );
+
+    create table departmentdetails_flightplandetails (
+        plans_id int4 not null,
+        deptdetails_deptid int4 not null
+    );
+
+    create table user_chkpt (
+        userid int4 not null,
+        chkptid int4 not null,
+        primary key (userid, chkptid)
+    );
+
+    alter table CombinationTable 
+        add constraint FK_46ivpv8mfpjwt1mjqlkex5v4n 
+        foreign key (cid) 
+        references ChkPtDetails;
+
+    alter table CombinationTable 
+        add constraint FK_reeyjvokpuotfegs8hyiaqfm5 
+        foreign key (flpd_id) 
+        references FlightPlanDetails;
+
+    alter table CombinationTable 
+        add constraint FK_q4cko6i1cjrnqwj5g3owghaay 
+        foreign key (rid) 
+        references RunwayDetails;
+
+    alter table CombinationTable 
+        add constraint FK_9sm8qffm2edcfpdvmx2iphqm5 
+        foreign key (Sid) 
+        references StageDetails;
+
+    alter table Departmentdetails 
+        add constraint FK_3spv7q3cmmpl36ew70y0k0p44 
+        foreign key (id) 
+        references FlightPlanDetails;
+
+    alter table FP_Runway 
+        add constraint FK_nxfate7dnsjvgeo7uuwbda7vq 
+        foreign key (flpid_id) 
+        references FlightPlanDetails;
+
+    alter table FP_Runway 
+        add constraint FK_n0q7fk563hooy9clpx41taupj 
+        foreign key (runid_rid) 
+        references RunwayDetails;
+
+    alter table FP_Stage 
+        add constraint FK_5hv837vqslmvnx8f820ummbil 
+        foreign key (flpid_id) 
+        references FlightPlanDetails;
+
+    alter table FP_Stage 
+        add constraint FK_cy8g0ljq5gcuq7p8lnb8eb1sr 
+        foreign key (stgid_Sid) 
+        references StageDetails;
+
+    alter table Role_Users 
+        add constraint FK_8588io7ddom0oyhjchqem4kuq 
+        foreign key (users_id) 
+        references Users;
+
+    alter table Role_Users 
+        add constraint FK_q4qcnohrs2xv5h13s0bjh2sys 
+        foreign key (Role_id) 
+        references Role;
+
+    alter table Users 
+        add constraint FK_hnqu9mlwl3xtmrx30miy8efb8 
+        foreign key (major_deptid) 
+        references Departmentdetails;
+
+    alter table Users 
+        add constraint FK_tepjub63jf9ay1mot9lq4m1fh 
+        foreign key (plan_id) 
+        references FlightPlanDetails;
+
+    alter table departmentdetails_flightplandetails 
+        add constraint FK_6rfdy4axhpe00simpt2q7u33g 
+        foreign key (deptdetails_deptid) 
+        references Departmentdetails;
+
+    alter table departmentdetails_flightplandetails 
+        add constraint FK_65kcd6ehwhqp2d59x5vdp56c5 
+        foreign key (plans_id) 
+        references FlightPlanDetails;
+
+    alter table user_chkpt 
+        add constraint FK_qwn7y4308a46igkv45mmxt5c5 
+        foreign key (chkptid) 
+        references ChkPtDetails;
+
+    alter table user_chkpt 
+        add constraint FK_h72r7r2ekt7f6vmsvn8kykm73 
+        foreign key (userid) 
+        references Users;
+
+     INSERT INTO users (id, enabled, name, password,roles, username) VALUES(1001,FALSE,'JOHN DOE1','abcd','STUDENT','jdoe1');
+INSERT INTO users (id, enabled, name, password, roles,username) VALUES(1002,FALSE,'JOHN DOE2','abcd','STUDENT','jdoe2');
+INSERT INTO users (id, enabled, name, password, roles,username) VALUES(1003,FALSE,'TRICIA FOX','abcd','ADVISOR','tfox');
+INSERT INTO users (id, enabled, name, password, roles, username) VALUES(1004,FALSE,'SUN Chengyu','abcd','ADMINISTRATOR','cysun');
+INSERT INTO departmentdetails(
+            deptid, departmentname)
+    VALUES(1,'COMPUTER SCIENCE');
+INSERT INTO departmentdetails(
+            deptid, departmentname)
+    VALUES(2,'ELECTRICAL ENGINEERING');
+INSERT INTO role VALUES(1,'STUDENT');
+INSERT INTO role VALUES(2,'ADVISOR');
+INSERT INTO role VALUES(3,'ADMINISTRATOR');
+INSERT INTO stagedetails VALUES (1, 'Pre-College (pre-flight checklist)', false);
+INSERT INTO runwaydetails VALUES (1, 'Academics', false);
+INSERT INTO runwaydetails VALUES (2, 'Career Preparation', false);
+INSERT INTO runwaydetails VALUES (3, 'Leadership & Community Engagement', false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (1, 'Algebra (before Yr1)', false, false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (2, 'Pre-calculus (before Yr1)', false, false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (3, 'Make a list of questions to ask during orientation and ask them!', false, false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (4, 'Apply for financial aid and scholarships', false, false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (5, 'ALGEBRA FOR EE', false, false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (6, 'PRE CALCULS FOR EE', false, false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (7, 'SCHOLARSHIP FOR EE', false, false);
+INSERT INTO chkptdetails(
+            cid, cname, cdlt, chkmark)
+    VALUES (8, 'Taking WPE FOR EE', false, false);
+INSERT INTO flightplandetails (
+            id, ennabled, name)
+    VALUES (1,TRUE,'FlightPlan For CS');
+INSERT INTO flightplandetails (
+            id, ennabled, name)
+    VALUES (2,TRUE,'FlightPlan For EE');
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (1,TRUE,1,1,1,1);
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (2,FALSE,4,1,1,1);
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (3,FALSE,2,1,2,1);
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (4,FALSE,3,1,3,1);
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (5,TRUE,8,2,1,1);
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (6,TRUE,5,2,1,1);
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (7,TRUE,6,2,2,1);
+INSERT INTO combinationtable(
+            comid, chker, cid, flpd_id, rid, sid)
+    VALUES (8,FALSE,7,2,3,1);
+INSERT INTO role_users VALUES(1,1001);
+INSERT INTO role_users VALUES(1,1002);
+INSERT INTO role_users VALUES(2,1003);
+INSERT INTO role_users VALUES(3,1004);
+INSERT INTO FP_Stage(fpstid,flpid_id,stgid_Sid) VALUES(1,1,1);
+INSERT INTO FP_Stage(fpstid,flpid_id,stgid_Sid) VALUES(2,2,1);
+
+INSERT INTO FP_Runway(fprunid,flpid_id,runid_rid) VALUES(1,1,1);
+INSERT INTO FP_Runway(fprunid,flpid_id,runid_rid) VALUES(2,1,2);
+INSERT INTO FP_Runway(fprunid,flpid_id,runid_rid) VALUES(3,1,3);
+INSERT INTO FP_Runway(fprunid,flpid_id,runid_rid) VALUES(4,2,1);
+INSERT INTO FP_Runway(fprunid,flpid_id,runid_rid) VALUES(5,2,2);
+INSERT INTO FP_Runway(fprunid,flpid_id,runid_rid) VALUES(6,2,3);
+INSERT INTO departmentdetails_flightplandetails(
+            deptdetails_deptid, plans_id)
+    VALUES (1, 1);
+INSERT INTO departmentdetails_flightplandetails(
+            deptdetails_deptid, plans_id)
+    VALUES (2, 2);
+INSERT INTO user_chkpt (userid,chkptid) VALUES (1001,1);
+INSERT INTO user_chkpt (userid,chkptid) VALUES (1002,5);
+INSERT INTO user_chkpt (userid,chkptid) VALUES (1002,6);
+INSERT INTO user_chkpt (userid,chkptid) VALUES (1002,7);
+INSERT INTO user_chkpt (userid,chkptid) VALUES (1002,8);
+UPDATE users SET major_deptid=1,plan_id=1 WHERE id=1001;
+UPDATE users SET major_deptid=2,plan_id=2 WHERE id=1002;
+UPDATE departmentdetails
+   SET id=1
+ WHERE deptid=1;
+UPDATE departmentdetails
+   SET id=2
+ WHERE deptid=2;
+UPDATE users SET major_deptid=1,plan_id=1 WHERE id=1001;
+    create sequence hibernate_sequence minvalue 100;
+
+

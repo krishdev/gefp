@@ -1,0 +1,302 @@
+package gefp.model.dao.jpa;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import gefp.model.ChkPtDetails;
+import gefp.model.Combination;
+import gefp.model.DepartmentDetails;
+import gefp.model.FlightPlanDetails;
+import gefp.model.RunwayDetails;
+import gefp.model.StageDetails;
+import gefp.model.User;
+
+
+import gefp.model.dao.StuDdao;
+
+@Repository
+public class StuDdaoIml implements StuDdao{
+	
+	 @PersistenceContext
+	    private EntityManager entityManager;
+	 
+	 @Override
+	    public User getUserByUsername( String username )
+	    {
+	        // This method is mainly used by the security code which usually needs
+	        // both the user credentials (i.e. username and password) and the
+	        // granted authorities (i.e. roles), so here we load the roles
+	        // collection "eagerly" using a join fetch to avoid a second query.
+	        String query = "from User user left join fetch user.roles "
+	            + "where username = :username";
+
+	        List<User> users = entityManager.createQuery( query, User.class )
+	            .setParameter( "username", username.toLowerCase() )
+	            .getResultList();
+	        return users.size() == 0 ? null : users.get( 0 );
+	    }
+
+	 @Override
+	 public User getStuDdetail(int id){
+		 return entityManager.find(User.class, id);
+	 }
+	 
+	 @Override
+	 public DepartmentDetails getdeptbyid(int id)
+	 {
+		 return entityManager.find(DepartmentDetails.class, id);
+	 }
+	 
+	 @Override
+	 @Transactional
+	 public User saveUser(User user){
+		 return entityManager.merge(user);
+	 }
+	 
+	 @Override
+	 @Transactional
+	 public StageDetails saveStage(StageDetails name){
+		 return entityManager.merge(name);
+	 }
+	 
+	 @Override
+	 @Transactional
+	 public DepartmentDetails saveDept(DepartmentDetails name){
+		 return entityManager.merge(name);
+	 }
+	 
+	 @Override
+	 @Transactional
+	 public RunwayDetails saveRunway(RunwayDetails name){
+		 return entityManager.merge(name);
+	 }
+	 
+	 @Override
+	 @Transactional
+	 public ChkPtDetails saveChkptn(ChkPtDetails name){
+		 System.out.println("entered chkimpl");
+		 return entityManager.merge(name);
+	 }
+	
+	 
+
+	 @Override
+	 @Transactional
+	 public Combination saveCell(Combination name){
+		 return entityManager.merge(name);
+	 }
+	 
+	 @Override
+	 @Transactional
+	 public List<Combination> savelistCell(List<Combination> name){
+		 return entityManager.merge(name);
+	 }
+	 
+	 @Override
+	 @Transactional
+	 public FlightPlanDetails saveFPDT(FlightPlanDetails name){
+		 return entityManager.merge(name);
+	 }
+	 
+	 @Override
+	 public List<User> getStuDdetails(){
+
+		 return entityManager.createQuery( "from User order by id", User.class )
+		            .getResultList();
+		
+	 }
+	 
+	 @Override
+	 public List<DepartmentDetails> getdepartments(){
+
+		 return entityManager.createQuery( "from DepartmentDetails order by id", DepartmentDetails.class )
+		            .getResultList();
+		
+	 }
+	 
+	 @Override
+	 public List<StageDetails> getStagedetails(){
+
+		 return entityManager.createQuery( "from StageDetails order by id asc", StageDetails.class )
+		            .getResultList();
+		
+	 }
+	 
+	
+	 
+	 @Override
+	 public List<RunwayDetails> getRunwaydetails(){
+
+		 return entityManager.createQuery( "from RunwayDetails order by id", RunwayDetails.class )
+		            .getResultList();
+		
+	 }
+	 
+	 @Override
+	 public DepartmentDetails getdepartmentbyname(String deptname){
+		 System.out.println("deptname in impl "+deptname);
+		 return entityManager.createQuery( "from DepartmentDetails where departmentName =:deptname" , DepartmentDetails.class )
+		         .setParameter("deptname",deptname)   
+				 .getResultList().get(0);
+		  
+	 }
+	 @Override
+	 public Combination getoptionsbycellid(int id)
+	 {
+		 return entityManager.createQuery("from Combination where Comid =:id",Combination.class).setParameter("id", id).getSingleResult();
+	 }
+	 
+	 @Override
+	 public ChkPtDetails getchkptnbyid(int id)
+	 {
+		 return entityManager.createQuery("from ChkPtDetails where cid =:id", ChkPtDetails.class).setParameter("id", id).getSingleResult();
+	 }
+	 
+	 @Override
+	 public StageDetails getstagebyid(int id)
+	 {
+		 return entityManager.createQuery("from StageDetails where sid =:id", StageDetails.class).setParameter("id", id).getSingleResult();
+	 }
+	 
+	 @Override
+	 public RunwayDetails getrunwaybyid(int id)
+	 {
+		 return entityManager.createQuery("from RunwayDetails where rid =:id", RunwayDetails.class).setParameter("id", id).getSingleResult();
+	 }
+	 
+	 @Override
+	 public User getStudbyname(String uname){
+		 List<User> stu =entityManager.createQuery( "from User where username =:username" , User.class )
+		         .setParameter("username",uname.toLowerCase())   
+				 .getResultList();
+		 return stu.size()==0 ? null : stu.get(0);
+	 }
+	 
+	 @Override
+	 public User getuser(int uname){
+		 return entityManager.find(User.class, uname);
+	 }
+	 
+	 @Override
+	 public FlightPlanDetails getflightplanbyid(int id){
+		 List <FlightPlanDetails> flp=entityManager.createQuery( "from FlightPlanDetails where id =:flpid" , FlightPlanDetails.class )
+		         .setParameter("flpid",id)   
+				 .getResultList();
+		 return flp.size()==0 ? null : flp.get(0);
+		  
+	 }
+	 
+	
+	 
+	//usernamenpassword
+		 @Override
+		 public User getUserbyusernamenpassword(String uname, String pass)
+		 {
+			 List<User> user =entityManager.createQuery("from User where username=:uname and password= :pwd",User.class).setParameter("uname", uname).setParameter("pwd", pass).getResultList();
+			 return user.size()==0 ? null : user.get(0);
+		 }
+	 
+	 @Override
+	 public List<FlightPlanDetails> getflightplanbyidforoption(int id){
+		 return entityManager.createQuery( "from FlightPlanDetails where id =:flpid" , FlightPlanDetails.class )
+		         .setParameter("flpid",id)   
+				 .getResultList();
+		 
+		  
+	 }
+	 
+	 @Override
+	 public List<DepartmentDetails> getdeptbyidlist(int id){
+		 return entityManager.createQuery( "from DepartmentDetails where deptid =:id" , DepartmentDetails.class )
+		         .setParameter("id",id)   
+				 .getResultList();
+	 }
+	 
+	 @Override
+	 public List<StageDetails> getstagebyidlist(int id){
+		 return entityManager.createQuery( "from StageDetails where sid =:id" , StageDetails.class )
+		         .setParameter("id",id)   
+				 .getResultList();
+	 }
+	 
+	 @Override
+	 public List<RunwayDetails> getrunwaybyidlist(int id){
+		 return entityManager.createQuery( "from RunwayDetails where rid =:id" , RunwayDetails.class )
+		         .setParameter("id",id)   
+				 .getResultList();
+	 }
+	 
+
+	 
+	 @Override
+	 public 	List<User> getStuDdetailsbyunmae(String user){
+		 
+		 return entityManager.createQuery("from User where username =:uname",User.class).setParameter("uname", user).getResultList();
+	 }
+	 
+	 @Override
+	 public List<User> getstudetailifchk(String unmae){
+		 
+		// int stuid= entityManager.createQuery("from User where username =:username",User.class).setParameter("username", unmae.toLowerCase()).getSingleResult().getId();
+		 return entityManager.createQuery("from User where username =:username",User.class).setParameter("username", unmae).getResultList();
+	 }
+	 
+	 @Override
+	 public List<Combination> getstudplan(Integer stuid, Integer planid)
+	 {
+		 return entityManager.createQuery("from Combination where user=:stuid and flpd=:planid",Combination.class).setParameter("stuid", stuid).setParameter("planid", planid).getResultList();
+	 }
+	 
+	 @Override
+	 public List<Combination> getstudetailifchkforjdoe2(String unmae){
+		 
+		 int stuid= entityManager.createQuery("from User where username =:username",User.class).setParameter("username", unmae.toLowerCase()).getSingleResult().getId();
+		 return entityManager.createQuery("from Combination where user ="+stuid,Combination.class).getResultList();
+	 }
+	 
+	 @Override
+	 public List<ChkPtDetails> getchkptkbyids(int id){
+		 return entityManager.createQuery("from ChkPtDetails where cid =:id",ChkPtDetails.class).setParameter("id", id).getResultList();
+	 }
+	 
+	 
+	 //auto complete
+	  @Override
+	    public List<User> searchUsersByPrefix( String term, int maxResults )
+	    {
+	        term = term.toLowerCase();
+	        String query = "from User where cin like :term || '%' "
+	            + "or username like :term || '%' "
+	            + "or name like :term || '%' "
+	            + "or email like :term || '%' "
+	            + "order by name asc";
+
+	        return entityManager.createQuery( query, User.class )
+	            .setParameter( "term", term )
+	            .setMaxResults( maxResults )
+	            .getResultList();
+	    }
+	  
+	  //student search
+	  @Override
+	    public List<User> searchUsers( String term )
+	    {
+	        term = term.toLowerCase();
+	        String query = "from User where cin = :term or username = :term "
+	            + "or name = :term or email = :term order by name asc";
+
+	        return entityManager.createQuery( query, User.class )
+	            .setParameter( "term", term)
+	            .getResultList();
+	    }
+	  @Override
+	    public List<Combination> getallcombi(){
+		  return entityManager.createQuery("from Combination",Combination.class).getResultList();
+	  }
+	 
+
+}

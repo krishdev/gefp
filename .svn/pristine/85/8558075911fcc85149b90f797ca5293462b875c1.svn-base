@@ -1,0 +1,45 @@
+package gefp.web.validator;
+
+import gefp.model.FlightPlanDetails;
+import gefp.model.User;
+import gefp.model.dao.StuDdao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+@Component
+public class UserValidator implements Validator{
+
+	@Autowired
+	StuDdao userdao;
+	
+	@Override
+	public boolean supports(Class<?> clazz) {
+		// true if clazz is user or a subclass. 
+		return User.class.isAssignableFrom(clazz);
+	}
+
+	@Override
+	public void validate(Object target, Errors errors) {
+
+		User user = (User) target;
+		
+		
+		if(! StringUtils.hasText(user.getUsername()))
+		{
+			 errors.rejectValue("username", "error.username");
+		}
+		
+		if(StringUtils.isEmpty(user.getPassword()))
+		{
+			 errors.rejectValue("password", "error.password");
+		}
+		
+	}
+
+	
+	
+}

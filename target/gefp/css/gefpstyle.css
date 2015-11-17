@@ -1,0 +1,81 @@
+@charset "utf-8";
+/* CSS Document */
+        .center
+        {
+           width: 50%;
+height: 400px;
+background-color: #ffbdf8;
+border-top-right-radius: 5%;
+border-top-left-radius: 5%;
+border-bottom-left-radius: 5%;
+border-bottom-right-radius: 5%;
+margin-left: 25%;
+margin-top: 10%;
+        }
+		.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+body {
+  padding-bottom: 40px;
+  color: #5a5a5a;
+}
+
+footer{
+  margin: 60px 0;
+}
+  /* Navbar positioning foo */
+  .navbar-wrapper {
+    margin-top: 20px;
+    margin-bottom: -90px; /* Negative margin to pull up carousel. 90px is roughly margins and height of navbar. */
+  }
+  /* The navbar becomes detached from the top, so we round the corners */
+  .navbar-wrapper .navbar {
+    border-radius: 4px;
+  }
+  .innnerheader{
+  	height: 100px;
+width: 80%;
+background-color: #ffd400;
+margin-top: 5%;
+margin-left: 10%;
+  }
+  .topdiv
+  {
+	  height:5px;
+  }
+  .logindiv
+  {
+  height:190px;
+  width:80%;
+  background-color:#f6fdbc;
+  margin-left: 10%;
+  }
+.fontlogin{
+font-family:monospace;font-size:16pt;
+}
+.myButton {
+	background-color:#c599ff;
+	-moz-border-radius:11px;
+	-webkit-border-radius:11px;
+	border-radius:11px;
+	border:1px solid #ffffff;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding: 7px 53px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.myButton:hover {
+	background-color:#c9b9d5;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}

@@ -1,0 +1,86 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Add Plan</title>
+<link href="../css/indexgefp.css" rel="stylesheet">
+
+</head>
+<body>
+<c:choose>
+   
+    <c:when test="${utype=='ADMINISTRATOR'}">
+    <form action="addPlan.html" method="post">
+	<div class="center">
+		
+	<div align="center">
+    <img src="../images/header.png">
+       
+    <div  id="menu"> 
+    <ul>
+<li><a href="planHome.html">Home</a></li>
+<li>
+</li><li></li><li></li><li></li><li></li>	
+<li><a href="<c:url value='/j_spring_security_logout'/>">Logout</a></li>
+</ul>
+
+    </div>
+    </div>
+    <!--Stages & Runways  -->
+    <div style=" padding: 100px 0 0 350px;">
+    <div>
+    <span>
+    
+    </span>
+    <span>Plan Name: </span> <input type="text" name="planname">
+    </div>
+    Select the existing stages and runways for the new plan 
+	    <table>
+	    <th>
+	    STAGES
+	    </th>
+	    <th>
+	    RUNWAYS
+	    </th>
+	    <tr>
+	    <td>
+	    	<c:forEach var="stage" items="${stages}">
+	    	
+	    	
+	    	<input type="checkbox" name="stagegroup" value="${stage.sid}">${stage.SName }<br/>
+	    	
+	    	</c:forEach>
+	    	</td>
+	    	<td>
+	    	<c:forEach var="runway" items="${runways}">
+	    	
+	    	
+	    	<input type="checkbox" name="runwaygroup" value="${runway.rid}">${runway.RName }<br/>
+	    	
+	    	</c:forEach>
+	    	</td>
+	    	
+	    </tr>
+	    <tr>
+	    <td align="center" colspan="2">
+	    <input type="hidden" name="deptid" value="${deptid}">
+	    <input type="submit" class="myaddButton" name="addplan" value="Add Plan">
+	    </tr>
+	    </table>
+    
+    </div>
+    </div>
+    </form>
+    </c:when>
+    <c:otherwise>
+    
+
+<div align="center"> User Not Valid <a href="gefpLogin.html"> Login Again</a> </div>
+	 </c:otherwise>
+    
+    </c:choose>
+</body>
+</html>

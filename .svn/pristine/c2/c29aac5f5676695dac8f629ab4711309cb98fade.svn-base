@@ -1,0 +1,10 @@
+error.username=Username required.
+error.password=Password required.
+error.required=required.
+error.password.username=User or Password is wrong.
+error.name=plan is empty.
+error.stage=Stage is empty.
+error.runway=Runway is empty.
+error.checkpoint=Checkpoint is empty.
+error.estage=Stage already exist.
+error.erunway=Runway already exist.

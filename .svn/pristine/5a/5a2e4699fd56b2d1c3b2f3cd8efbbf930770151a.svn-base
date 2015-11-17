@@ -1,0 +1,915 @@
+package gefp.web.controller;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import gefp.model.ChkPtDetails;
+import gefp.model.Combination;
+import gefp.model.DepartmentDetails;
+import gefp.model.FP_Runway;
+import gefp.model.FP_Stage;
+import gefp.model.FlightPlanDetails;
+import gefp.model.RunwayDetails;
+import gefp.model.StageDetails;
+import gefp.model.TempRunway;
+import gefp.model.TempStage;
+import gefp.model.TempStorage;
+import gefp.model.User;
+import gefp.model.dao.Checkptdao;
+import gefp.model.dao.Combintaiondao;
+import gefp.model.dao.StuDdao;
+import gefp.web.validator.LoginValidator;
+import gefp.web.validator.PlanValidator;
+import gefp.web.validator.UserValidator;
+
+import javax.net.ssl.SSLEngineResult.Status;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+
+@Controller
+@SessionAttributes("users")
+public class UserController {
+
+	@Autowired
+	StuDdao userdao;
+	
+	@Autowired
+	Combintaiondao combdao;
+	
+	@Autowired
+	UserValidator validator;
+	
+	@Autowired
+	LoginValidator loginvalid;
+	
+	@Autowired
+	PlanValidator planvalidator;
+	
+	@RequestMapping("/list.html")
+	public String users( ModelMap model )
+	{
+	/*	model.put("users", userdao.getStuDdetails());*/
+		return "list";
+	}
+	
+	@RequestMapping("/view.html")
+	public String view(@RequestParam Integer id, ModelMap model)
+	{
+		model.put("user", userdao.getStuDdetail(id));
+		return "view";
+	}
+	
+	@RequestMapping("/view/{id}.html")
+	public String view2(@PathVariable Integer id, ModelMap model )
+	{
+		return view( id, model );
+	}
+	
+	@RequestMapping("/viewPlan.html")
+	public String viewPlan(@RequestParam Integer stuid,Integer planid, ModelMap model)
+	{
+		//int planid=userdao.getStuDdetail(id).getPlan().getId();
+		int planrunwaysize=userdao.getStuDdetail(stuid).getPlan().getFp_run().size();
+		int planstagesize=userdao.getStuDdetail(stuid).getPlan().getFp_stg().size();
+		//System.out.println("runwaysize: "+planrunwaysize+" stagesize: "+planstagesize);
+		int sizeofchkbyuser=userdao.getStuDdetail(stuid).getChkpt().size();
+		int combi = userdao.getflightplanbyid(planid).getComb().size();
+		//model.put("user",userdao.getstudplan(id, planid));
+		List<TempStorage> temps = new ArrayList<>();
+		List<TempRunway> temprunways = new ArrayList<>();
+		List<TempStage> tempstageways = new ArrayList<>();
+		//System.out.println("size: "+combi);
+		
+		//plan runway
+		for(int i=0;i<planrunwaysize;i++)
+		{
+			TempRunway tmprunway= new TempRunway();
+			tmprunway.setPlanid(userdao.getStuDdetail(stuid).getPlan().getId());
+			tmprunway.setRunway(userdao.getStuDdetail(stuid).getPlan().getFp_run().get(i).getRunid().getRName());
+			tmprunway.setRunid(userdao.getStuDdetail(stuid).getPlan().getFp_run().get(i).getRunid().getRid());
+			temprunways.add(tmprunway);
+			
+		}
+		model.put("planrunwaydetails", temprunways);
+		
+		//plan stage
+		for(int i=0;i<planstagesize;i++)
+		{
+			TempStage tmpstageway= new TempStage();
+			tmpstageway.setPlanid(userdao.getStuDdetail(stuid).getPlan().getId());
+			tmpstageway.setSname(userdao.getStuDdetail(stuid).getPlan().getFp_stg().get(i).getStgid().getSName());
+			tmpstageway.setStageid(userdao.getStuDdetail(stuid).getPlan().getFp_stg().get(i).getStgid().getSid());
+			tempstageways.add(tmpstageway);
+			
+		}
+		model.put("planstagedetails", tempstageways);
+		
+		//cells
+		for(int i=0;i<combi;i++){
+			TempStorage tmp = new TempStorage();
+			int curent =userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getChkdt().getCid();
+		//System.out.println("Runway: "+userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getRunway().getRName());
+		tmp.setCellid(userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getComid());
+		tmp.setRunway(userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getRunway().getRName());
+		tmp.setRunid(userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getRunway().getRid());
+		tmp.setChkpt(userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getChkdt().getCName());
+		tmp.setChkid(userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getChkdt().getCid());
+		tmp.setSname(userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getStagedt().getSName());
+		tmp.setSid(userdao.getStuDdetail(stuid).getPlan().getComb().get(i).getStagedt().getSid());
+		
+		for(int j=0;j<sizeofchkbyuser;j++){
+			int chus= userdao.getStuDdetail(stuid).getChkpt().get(j).getCid();
+			if(chus==curent){
+				tmp.setChkuser(chus);
+				break;
+			}
+		}
+		
+		temps.add(tmp);
+		}
+		model.put("cells", temps);
+		
+		List<ChkPtDetails>chkpts = new ArrayList<>();
+		
+		for(int i=0;i<sizeofchkbyuser;i++){
+			ChkPtDetails chk = new ChkPtDetails();
+			chk.setCid(userdao.getStuDdetail(stuid).getChkpt().get(i).getCid());
+			chkpts.add(chk);
+		}
+		model.put("chuser", chkpts);
+		model.put("flplanid", planid);
+		model.put("u", userdao.getStuDdetail(stuid));
+		return "planSearch";
+	}
+	
+	@RequestMapping("profile.html")
+	public String profile(ModelMap models, HttpSession session){
+		String uname = (String) session.getAttribute("username");
+		User user = userdao.getStudbyname(uname);
+		int stuid = user.getId();
+		int planid = user.getPlan().getId();
+		models.put("usern", user);
+		models.put("stud", stuid);
+		models.put("plan", planid);
+		return "profile";
+	}
+	
+	@RequestMapping(value="editProfile.html",method=RequestMethod.GET)
+	public String editProfile(ModelMap model,HttpSession session){
+		
+	
+		String uname = (String) session.getAttribute("username");
+		User user = userdao.getStudbyname(uname);
+		int stuid = user.getId();
+		int planid = user.getPlan().getId();
+		User eProfile = userdao.getStudbyname(uname);
+		model.put("users", userdao.getuser(stuid));
+		System.out.println("userchk: "+ userdao.getuser(stuid).getChkpt());
+		List<DepartmentDetails> deptlist=new ArrayList<>();
+		int deptsize=userdao.getdepartments().size();
+		for(int i=0; i<deptsize; i++){
+			String deptname=userdao.getdepartments().get(i).getDepartmentName();
+			int deptsid=userdao.getdepartments().get(i).getDeptid();
+			DepartmentDetails setdept = new DepartmentDetails();
+			setdept.setDepartmentName(deptname);
+			setdept.setDeptid(deptsid);
+			deptlist.add(setdept);
+			System.out.println(userdao.getdepartments().get(i).getDeptid());
+		}
+		model.put("deptnames", deptlist);
+
+		
+		int dp=eProfile.getMajor().getDeptid();
+		model.put("cdpt", dp);
+		model.put("stud", stuid);
+		model.put("plan", planid);
+		return "editProfile";
+	}
+	
+	@RequestMapping(value="editProfile.html",method=RequestMethod.POST)
+	public String editProfile(@ModelAttribute User users,@RequestParam int deptid, BindingResult result,SessionStatus status,ModelMap model,HttpSession session){
+	
+		validator.validate(users, result);
+		if(result.hasErrors()) return "editProfile";
+		
+		int uid = users.getId();
+		List<ChkPtDetails> cklist = userdao.getStuDdetail(uid).getChkpt();
+		System.out.println("chkpts");
+		DepartmentDetails major = userdao.getdeptbyid(deptid);
+		FlightPlanDetails fpd = major.getFlpid();
+		if(!users.getPassword1().isEmpty()){
+			users.setPassword(users.getPassword1());
+		}
+		else{
+			users.setPassword(users.getPassword());
+		}
+		//users.setChkpt(userchk);
+		users.setMajor(major);
+		users.setPlan(fpd);
+		users.setChkpt(cklist);
+		users = userdao.saveUser(users);
+		status.setComplete();
+		return "redirect:profile.html";
+	}
+	
+	
+	@RequestMapping(value="/planHome.html", method=RequestMethod.GET)
+	public String plan( Map<String, Object> model )
+	{
+		DepartmentDetails deptdForm = new DepartmentDetails();
+		model.put("deptForm", deptdForm);
+
+		List<DepartmentDetails> deptlist=new ArrayList<>();
+		int deptsize=userdao.getdepartments().size();
+		for(int i=0; i<deptsize; i++){
+			String deptname=userdao.getdepartments().get(i).getDepartmentName();
+			int deptsid=userdao.getdepartments().get(i).getDeptid();
+			DepartmentDetails setdept = new DepartmentDetails();
+			setdept.setDepartmentName(deptname);
+			setdept.setDeptid(deptsid);
+			deptlist.add(setdept);
+			System.out.println(userdao.getdepartments().get(i).getDeptid());
+		}
+		model.put("deptnames", deptlist);
+		
+		model.put("user",new User());
+		return "planHome";
+	}
+	
+	@RequestMapping(value="/planHome.html", method=RequestMethod.POST)
+	public String plan(@ModelAttribute("deptForm") DepartmentDetails dept,@RequestParam int deptid,String ok, ModelMap model)
+	{
+		String path="planHome";
+		String btntype=ok;
+		//int sizeofplanbydept= userdao.getdepartmentbyname(departmentName).getPlans().size();
+		//int mainplanidofdept= userdao.getdepartmentbyname(departmentName).getDeptid().
+		if(btntype.equals("OK")){
+			int sizeofplans=userdao.getdeptbyid(deptid).getPlans().size();
+			List<FlightPlanDetails> fpd= new ArrayList<>();
+			for(int i=0; i<sizeofplans;i++){
+				FlightPlanDetails fpds=new FlightPlanDetails();
+				fpds.setId(userdao.getdeptbyid(deptid).getPlans().get(i).getId());
+				fpds.setName(userdao.getdeptbyid(deptid).getPlans().get(i).getName());
+				fpd.add(fpds);
+			}
+			model.put("flpdetail", fpd);
+			int currentplan =userdao.getdeptbyid(deptid).getFlpid().getId();
+			model.put("currentplan", currentplan);
+			model.put("deptid", deptid);
+			List<DepartmentDetails> deptlist=new ArrayList<>();
+			int deptsize=userdao.getdepartments().size();
+			for(int i=0; i<deptsize; i++){
+				String deptname=userdao.getdepartments().get(i).getDepartmentName();
+				int deptsid=userdao.getdepartments().get(i).getDeptid();
+				DepartmentDetails setdept = new DepartmentDetails();
+				setdept.setDepartmentName(deptname);
+				setdept.setDeptid(deptsid);
+				deptlist.add(setdept);
+				System.out.println(userdao.getdepartments().get(i).getDeptid());
+			}
+			model.put("deptnames", deptlist);
+			//model.put("deptnames",professionList);
+			model.put("deptnamess",userdao.getdeptbyid(deptid).getDepartmentName());
+			path="planHome";
+		}
+		
+	
+		return path;
+	}
+	
+	@RequestMapping("viewSearchResult.html")
+	public String viewSearchResult(@RequestParam int deptid,String ok, ModelMap model){
+		String path="planHome";
+		String btntype=ok;
+		//int sizeofplanbydept= userdao.getdepartmentbyname(departmentName).getPlans().size();
+		//int mainplanidofdept= userdao.getdepartmentbyname(departmentName).getDeptid().
+		if(btntype.equals("OK")){
+			int sizeofplans=userdao.getdeptbyid(deptid).getPlans().size();
+			List<FlightPlanDetails> fpd= new ArrayList<>();
+			for(int i=0; i<sizeofplans;i++){
+				FlightPlanDetails fpds=new FlightPlanDetails();
+				fpds.setId(userdao.getdeptbyid(deptid).getPlans().get(i).getId());
+				fpds.setName(userdao.getdeptbyid(deptid).getPlans().get(i).getName());
+				fpd.add(fpds);
+			}
+			
+			model.put("flpdetail", fpd);
+			int currentplan =userdao.getdeptbyid(deptid).getFlpid().getId();
+			model.put("currentplan", currentplan);
+			model.put("deptid", deptid);
+			List<DepartmentDetails> deptlist=new ArrayList<>();
+			int deptsize=userdao.getdepartments().size();
+			for(int i=0; i<deptsize; i++){
+				String deptname=userdao.getdepartments().get(i).getDepartmentName();
+				int deptsid=userdao.getdepartments().get(i).getDeptid();
+				DepartmentDetails setdept = new DepartmentDetails();
+				setdept.setDepartmentName(deptname);
+				setdept.setDeptid(deptsid);
+				deptlist.add(setdept);
+				System.out.println(userdao.getdepartments().get(i).getDeptid());
+			}
+			model.put("deptnames", deptlist);
+			//model.put("deptnames",professionList);
+			//System.out.println(userdao.getdeptbyid(deptid).getDepartmentName());
+			
+			path="planHome";
+		}
+		
+	
+		return path;
+	}
+	
+	@RequestMapping(value = "/searchPlan.html")
+	public String searchPlan(@RequestParam int planid, String ok, ModelMap model)
+	{
+		String path="searchHome";
+		String btntype=ok;
+		if(btntype.equals("VIEW")){
+			//int planid= Integer.parseInt(departmentName);
+			
+			int sizeofcombiviaplanid= userdao.getflightplanbyid(planid).getComb().size();
+			//int deptid=userdao.getdepartmentbyname(departmentName).getDeptid();
+			int sizeofstageinplan=userdao.getflightplanbyid(planid).getFp_stg().size();
+			int sizeofrunwayinplan=userdao.getflightplanbyid(planid).getFp_run().size();
+			String planname=userdao.getflightplanbyid(planid).getName();
+			List<TempRunway> temprunways = new ArrayList<>();
+			List<TempStage> tempstageways = new ArrayList<>();
+			
+			//plan runway
+			for(int i=0;i<sizeofrunwayinplan;i++)
+			{
+				TempRunway tmprunway= new TempRunway();
+				tmprunway.setPlanid(userdao.getflightplanbyid(planid).getId());
+				tmprunway.setRunway(userdao.getflightplanbyid(planid).getFp_run().get(i).getRunid().getRName());
+				tmprunway.setRunid(userdao.getflightplanbyid(planid).getFp_run().get(i).getRunid().getRid());
+				temprunways.add(tmprunway);
+				
+			}
+			model.put("planrunwaydetails", temprunways);
+			
+			//plan stage
+			for(int i=0;i<sizeofstageinplan;i++)
+			{
+				TempStage tmpstageway= new TempStage();
+				tmpstageway.setPlanid(userdao.getflightplanbyid(planid).getId());
+				tmpstageway.setSname(userdao.getflightplanbyid(planid).getFp_stg().get(i).getStgid().getSName());
+				tmpstageway.setStageid(userdao.getflightplanbyid(planid).getFp_stg().get(i).getStgid().getSid());
+				tmpstageway.setPname(planname);
+				tempstageways.add(tmpstageway);
+				
+			}
+			model.put("planstagedetails", tempstageways);
+			
+			
+			TempStorage storeForm = new TempStorage();
+			List<TempStorage> temps = new ArrayList<>();
+			//cells
+			for(int i=0;i<sizeofcombiviaplanid;i++){
+				TempStorage tmp = new TempStorage();
+
+				//System.out.println("Runway: "+userdao.getflightplanbyid(planid).getComb().get(i).getRunway().getRName());
+				tmp.setCellid(userdao.getflightplanbyid(planid).getComb().get(i).getComid());
+				tmp.setRunway(userdao.getflightplanbyid(planid).getComb().get(i).getRunway().getRName());
+				tmp.setRunid(userdao.getflightplanbyid(planid).getComb().get(i).getRunway().getRid());
+				tmp.setChkpt(userdao.getflightplanbyid(planid).getComb().get(i).getChkdt().getCName());
+				tmp.setChkid(userdao.getflightplanbyid(planid).getComb().get(i).getChkdt().getCid());
+				tmp.setSname(userdao.getflightplanbyid(planid).getComb().get(i).getStagedt().getSName());
+				tmp.setSid(userdao.getflightplanbyid(planid).getComb().get(i).getStagedt().getSid());
+				temps.add(tmp);
+			}
+			model.put("storesForm",storeForm);
+			model.put("cells", temps);
+			model.put("flplanid", planid);
+			
+			path= "searchHome";
+		}
+		return path;
+	}
+	
+	//AddStage
+	@RequestMapping(value="/addOptions.html",method=RequestMethod.GET)
+	public String addOptions(@RequestParam String btn,int planid,  ModelMap models)
+	{
+		int sizeofstg=userdao.getStagedetails().size();//this will be more in number or equal with a particular plan
+		List<StageDetails> liststg=new ArrayList<>();
+		
+			for(int i=0;i<sizeofstg;i++){
+				StageDetails tmpstg= new StageDetails();
+				tmpstg.setSid(userdao.getStagedetails().get(i).getSid());
+				tmpstg.setSName(userdao.getStagedetails().get(i).getSName());
+				liststg.add(tmpstg);
+			}
+			
+		models.put("setofstg",liststg);
+		StageDetails StageForm = new StageDetails();
+		models.put("planid",planid);
+		if(btn.equals("exist")){
+			models.put("error","Stage already exist please select a new one or type one.");
+		}
+		if(btn.equals("edit")){
+			models.put("error","Stage name is empty.");
+		}
+		models.put("StageForm", StageForm);
+		models.put("user", new User());
+		return "addOptions";
+	}
+	
+	@RequestMapping(value="/addOptions.html",method=RequestMethod.POST)
+	public String addOptions(@ModelAttribute("StageForm") StageDetails stg,@RequestParam int planid, String SName, String add, ModelMap models)
+	{
+		String btntype=add;
+		if(!SName.isEmpty()){
+		if(btntype.equals("ADDStage"))
+		{
+		//List<FlightPlanDetails> flplan = userdao.getflightplanbyidforoption(planid);
+			FlightPlanDetails flplan = userdao.getflightplanbyid(planid);
+			StageDetails stage =new StageDetails();
+			stage.setSName(SName);			
+			FP_Stage fpstg = new FP_Stage();
+			fpstg.setFlpid(flplan);
+			fpstg.setStgid(stage);
+			stage.getFp_stg().add(fpstg);
+			userdao.saveStage(stage);
+		}
+		}
+		else
+		{
+			return "redirect:addOptions.html?btn=edit&planid="+planid;
+		}
+		//models.put("user", "");
+		return "redirect:searchPlan.html?planid="+planid+"&ok=VIEW";
+	}
+	
+	//Add Runway
+	@RequestMapping(value="/addRunway.html",method=RequestMethod.GET)
+	public String addRunway(@RequestParam String btn,int planid,  ModelMap models)
+	{
+		
+		//int planid=1;
+		int sizeofrun=userdao.getRunwaydetails().size();//this will be more in number or equal with a particular plan
+		int sizeofrunbyplan=userdao.getflightplanbyid(planid).getFp_run().size();
+		System.out.println("Sizeofrunwy: "+sizeofrun+" Sizeofplanrun: "+sizeofrunbyplan);
+		List<RunwayDetails> listrun=new ArrayList<>();
+		
+			for(int i=0;i<sizeofrun;i++){
+				RunwayDetails tmprun= new RunwayDetails();
+				tmprun.setRid(userdao.getRunwaydetails().get(i).getRid());
+				tmprun.setRName(userdao.getRunwaydetails().get(i).getRName());
+				listrun.add(tmprun);
+		
+			
+		}
+			
+			
+		models.put("setofrunw",listrun);
+
+		RunwayDetails RunwayForm = new RunwayDetails();
+		models.put("planid",planid);
+		if(btn.equals("exist")){
+			models.put("error","Runway already exist please select a new one or type one.");
+		}
+		if(btn.equals("edit")){
+			models.put("error","Runway is empty.");
+		}
+		models.put("RunwayForm", RunwayForm);
+		models.put("user", new User());
+		return "addRunway";
+	}
+	
+	@RequestMapping(value="/addRunway.html",method=RequestMethod.POST)
+	public String addRunway(@ModelAttribute("RunwayForm") RunwayDetails run,@RequestParam int planid, String RName, String add)
+	{
+		
+		
+		FlightPlanDetails flplan = userdao.getflightplanbyid(planid);
+			RunwayDetails runway = new RunwayDetails();
+			if(!RName.isEmpty()){
+			runway.setRName(RName);
+			FP_Runway fprun = new FP_Runway();
+			fprun.setFlpid(flplan);
+			fprun.setRunid(runway);
+			runway.getFp_run().add(fprun);
+			userdao.saveRunway(runway);
+			}
+			else{
+				return "redirect:addRunway.html?btn=edit&planid="+planid;
+			}
+			return "redirect:searchPlan.html?planid="+planid+"&ok=VIEW";
+	}
+	
+	//Add Checkpoint
+	@RequestMapping(value="/addCheckpoint.html",method=RequestMethod.GET)
+	public String addCheckpoint(@RequestParam String btn,int planid,  ModelMap models)
+	{
+		System.out.println("Entered add checkpoint get");
+		int sizeofstagebyplanid= userdao.getflightplanbyid(planid).getFp_stg().size();
+		int sizeofrunwaybyplanid= userdao.getflightplanbyid(planid).getFp_run().size();
+		List<StageDetails> tempstageways = new ArrayList<>();
+		List<RunwayDetails> temprunways= new ArrayList<>();
+		for(int i=0;i<sizeofstagebyplanid;i++){
+			StageDetails temp= new StageDetails();
+			temp.setSName(userdao.getflightplanbyid(planid).getFp_stg().get(i).getStgid().getSName());
+			temp.setSid(userdao.getflightplanbyid(planid).getFp_stg().get(i).getStgid().getSid());
+			tempstageways.add(temp);
+			System.out.println("Add CHK PT STGE");
+		}
+		
+		for(int i=0;i<sizeofrunwaybyplanid;i++){
+			RunwayDetails temp= new RunwayDetails();
+			temp.setRName(userdao.getflightplanbyid(planid).getFp_run().get(i).getRunid().getRName());
+			temp.setRid(userdao.getflightplanbyid(planid).getFp_run().get(i).getRunid().getRid());
+			temprunways.add(temp);
+			System.out.println("Add CHK PT Runway");
+		}
+		
+		if(btn.equals("errorcheckpoint")){
+			models.put("error", "Checkpoint is empty");
+		}
+		else if(btn.equals("errorstgrun")){
+			models.put("error", "Stage & Runway should have value");
+		}
+		models.put("stages", tempstageways);
+		models.put("runways", temprunways);
+		//int planid=1;
+		ChkPtDetails ChkptnForm = new ChkPtDetails();
+		models.put("planid",planid);
+		models.put("option",btn);
+		models.put("ChkptnForm", ChkptnForm);
+		models.put("user", new User());
+		return "checkPoints";
+	}
+	
+	@RequestMapping(value="/addCheckpoint.html",method=RequestMethod.POST)
+	public String addCheckpoint(@RequestParam int planid, Integer stageid, Integer runwayid, String chkptn,ModelMap model)
+	{
+		if(stageid != null && runwayid != null){
+			if(!chkptn.isEmpty()){
+				ChkPtDetails chkpt = new ChkPtDetails();
+				chkpt.setCName(chkptn);
+				userdao.saveChkptn(chkpt);
+				
+				
+				
+				Combination cell = new Combination();
+				FlightPlanDetails flplan = userdao.getflightplanbyid(planid);
+				RunwayDetails runid =userdao.getrunwaybyid(runwayid);
+				StageDetails stage=userdao.getstagebyid(stageid);
+				cell.setChkdt(chkpt);
+				cell.setFlpd(flplan);
+				cell.setRunway(runid);
+				cell.setStagedt(stage);
+				chkpt.getComb().add(cell);
+				userdao.saveCell(cell);
+			}
+			else{
+
+				return "redirect:addCheckpoint.html?btn=errorcheckpoint&planid="+planid;
+			}
+			
+		}
+		else 
+		{
+			return "redirect:addCheckpoint.html?btn=errorstgrun&planid="+planid;
+			
+		}
+		
+		
+		
+		return "redirect:searchPlan.html?planid="+planid+"&ok=VIEW";
+	}
+	
+	//Edit Checkpoint
+	@RequestMapping(value="/editCheckpoint.html",method=RequestMethod.GET)
+	public String editCheckpoint(@RequestParam int chkid,int cellid, int stageid, int runwayid, int planid,  ModelMap models)
+	{
+		int sizeofstagebyplanid= userdao.getflightplanbyid(planid).getFp_stg().size();
+		int sizeofrunwaybyplanid= userdao.getflightplanbyid(planid).getFp_run().size();
+		List<StageDetails> tempstageways = new ArrayList<>();
+		List<RunwayDetails> temprunways= new ArrayList<>();
+		for(int i=0;i<sizeofstagebyplanid;i++){
+			StageDetails temp= new StageDetails();
+			temp.setSName(userdao.getflightplanbyid(planid).getFp_stg().get(i).getStgid().getSName());
+			temp.setSid(userdao.getflightplanbyid(planid).getFp_stg().get(i).getStgid().getSid());
+			tempstageways.add(temp);
+		}
+		
+		for(int i=0;i<sizeofrunwaybyplanid;i++){
+			RunwayDetails temp= new RunwayDetails();
+			temp.setRName(userdao.getflightplanbyid(planid).getFp_run().get(i).getRunid().getRName());
+			temp.setRid(userdao.getflightplanbyid(planid).getFp_run().get(i).getRunid().getRid());
+			temprunways.add(temp);
+		}
+		
+		models.put("stages", tempstageways);
+		models.put("runways", temprunways);
+		ChkPtDetails ckt = userdao.getchkptnbyid(chkid);
+		models.put("ckname", ckt.getCName());
+		models.put("chkid",chkid);
+		models.put("planid", planid);
+		models.put("cellid", cellid);
+		models.put("stage_id",stageid);
+		models.put("runwayid", runwayid);
+		return "editchkpt";
+	}
+	
+	@RequestMapping(value="/editCheckpoint.html",method=RequestMethod.POST)
+	public String editCheckpoint(@RequestParam int chkid,int cellid, int stageid, int runwayid, int planid, String cname, ModelMap models)
+	{
+		StageDetails stagedt= new StageDetails();
+		stagedt.setSid(stageid);
+		RunwayDetails runway= new RunwayDetails();
+		runway.setRid(runwayid);
+		FlightPlanDetails flpd= new FlightPlanDetails();
+		flpd.setId(planid);
+		
+		ChkPtDetails chkpt = new ChkPtDetails();
+		chkpt.setCid(chkid);
+		chkpt.setCName(cname);
+		userdao.saveChkptn(chkpt);
+		
+		Combination cell = new Combination();
+		cell.setComid(cellid);
+		cell.setFlpd(flpd);
+		cell.setChkdt(chkpt);
+		cell.setRunway(runway);
+		cell.setStagedt(stagedt);
+		userdao.saveCell(cell);
+		return "redirect:searchPlan.html?planid="+planid+"&ok=VIEW";
+	}
+	
+	//login	
+	@RequestMapping(value="/gefpLogin.html",method=RequestMethod.GET)
+	public String login(ModelMap models)
+	{
+		
+		models.put("user", new User());
+		return "gefpLogin";
+	}
+	
+	@RequestMapping(value = "/gefpLogin.html", method = RequestMethod.POST)
+	public String login(@ModelAttribute User user,@RequestParam String username, String password,ModelMap model, HttpSession session,BindingResult result)
+	{
+		loginvalid.validate(user, result);
+		if(result.hasErrors()) return "gefpLogin";
+		String path="gefpLogin";
+		//user.setUsername(username);
+		User users = userdao.getUserbyusernamenpassword(username,password);
+		if(users != null)
+		{
+			//System.out.println("values: "+username);
+			if(users.getRoles().equals("ADMINISTRATOR"))
+			{
+				
+				//user.setPassword(password);
+				session.setAttribute("username", username);
+				session.setAttribute("utype", "ADMINISTRATOR");
+				path= "redirect:planHome.html";
+			}
+			else if(users.getRoles().equals("STUDENT"))
+			{
+				System.out.println("studentvalues: "+username);
+				session.setAttribute("username", username);
+				session.setAttribute("utype", "STUDENT");
+				session.setAttribute("planid", users.getPlan().getId());
+				session.setAttribute("stuid", users.getId());
+				
+				path= "redirect:viewPlan.html?stuid="+users.getId()+"&planid="+users.getPlan().getId();
+			}
+		}
+		else
+		{
+			model.put("erroruser", "username or password is wrong");
+			path= "gefpLogin";
+		}
+		
+		return path;
+	}
+	
+	@RequestMapping(value = "/logout.html")
+	public String logout( HttpSession session)
+	{
+		session.invalidate();
+		return "redirect:gefpLogin.html";
+	}
+
+	@RequestMapping(value = "gefphome.html", method = RequestMethod.GET)
+	public String planHome( ModelMap model)
+	{
+		
+		model.put("username", new User());
+		return "redirect:planHome";
+	}
+	@RequestMapping(value = "gefphome.html", method = RequestMethod.POST)
+	public String planHome( @RequestParam HttpSession session)
+	{
+		return "redirect:planHome";
+	}
+	
+	//ADD PLAN
+	@RequestMapping(value="addPlan.html")
+	public String addPlan(@RequestParam int deptid,ModelMap models){
+		
+		int sizeofstage=userdao.getStagedetails().size();
+		int sizeofrunway=userdao.getRunwaydetails().size();
+		List<StageDetails> liststage = new ArrayList<>();
+		List<RunwayDetails> listrunway = new ArrayList<>();
+		for(int i=0;i<sizeofstage;i++){
+		StageDetails stg= new StageDetails();
+		
+		stg.setSid(userdao.getStagedetails().get(i).getSid());
+		stg.setSName(userdao.getStagedetails().get(i).getSName());
+		liststage.add(stg);
+		}
+		for(int i=0;i<sizeofrunway;i++){
+			RunwayDetails run= new RunwayDetails();
+			
+			run.setRid(userdao.getRunwaydetails().get(i).getRid());
+			run.setRName(userdao.getRunwaydetails().get(i).getRName());
+			listrunway.add(run);
+			}
+		models.put("stages", liststage);
+		models.put("runways", listrunway);
+		models.put("deptid", deptid);
+		return "addPlan";
+	}
+	
+	@RequestMapping("existStage.html")
+	public String existStage(@RequestParam int planid, int sid,ModelMap model)
+	{		
+		FlightPlanDetails flp = userdao.getflightplanbyid(planid);
+		StageDetails stg = userdao.getstagebyid(sid);
+		
+		FP_Stage fpstg= new FP_Stage();
+		fpstg.setFlpid(flp);
+		fpstg.setStgid(stg);
+		userdao.savefpstg(fpstg);
+		
+		
+		
+		return "redirect:searchPlan.html?planid="+planid+"&ok=VIEW";
+		
+	}
+	
+	//add existingrunway
+	@RequestMapping("existRunway.html")
+	public String existRunway(@RequestParam int planid, int rid,ModelMap model)
+	{		
+		FlightPlanDetails flp = userdao.getflightplanbyid(planid);
+		RunwayDetails run = userdao.getrunwaybyid(rid);
+		Boolean isexist=false;
+		String plan="addRunway";
+		int sizeoffprun =userdao.getfprunwayidforexrunwys(run).size();
+		for(int i=0;i<sizeoffprun;i++){
+			FlightPlanDetails fpid = userdao.getfprunwayidforexrunwys(run).get(i).getFlpid();
+			Integer idfp=fpid.getId();
+			System.out.println("id of flp "+idfp+" plan "+planid);
+			if(idfp.equals(planid))
+				{
+				isexist=true;
+				break;
+				}
+		}
+		
+			if(isexist!=true){
+				FP_Runway fprun= new FP_Runway();
+				fprun.setFlpid(flp);
+				fprun.setRunid(run);
+				userdao.savefprun(fprun);
+				plan="redirect:searchPlan.html?planid="+planid+"&ok=VIEW";
+			}
+			else
+			{
+				model.put("errorrunway","Selected Runway exists already");
+				plan="redirect:addRunway.html?planid="+planid+"&btn=exist";
+			}
+		
+		return plan;
+	}
+	
+		//add existingstage
+		@RequestMapping("existStages.html")
+		public String existStages(@RequestParam int planid, int sid,ModelMap model)
+		{		
+			FlightPlanDetails flp = userdao.getflightplanbyid(planid);
+			StageDetails stg = userdao.getstagebyid(sid);
+			Boolean isexist=false;
+			String plan="addRunway";
+			int sizeoffpstg =userdao.getfpstageidforexstages(stg).size();
+			for(int i=0;i<sizeoffpstg;i++){
+				FlightPlanDetails fpid = userdao.getfpstageidforexstages(stg).get(i).getFlpid();
+				Integer idfp=fpid.getId();
+				System.out.println("id of flp "+idfp+" plan "+planid);
+				if(idfp.equals(planid))
+					{
+					isexist=true;
+					break;
+					}
+			}
+			
+				if(isexist!=true){
+					FP_Stage fpstg= new FP_Stage();
+					fpstg.setFlpid(flp);
+					fpstg.setStgid(stg);
+					userdao.savefpstg(fpstg);
+					plan="redirect:searchPlan.html?planid="+planid+"&ok=VIEW";
+				}
+				else
+				{
+					
+					plan="redirect:addOptions.html?planid="+planid+"&btn=exist";
+				}
+			
+			return plan;
+		}
+		
+	//ADD PLAN
+	@RequestMapping(value="addPlan.html",method=RequestMethod.POST)
+	public String addPlan(@RequestParam int deptid,String planname, ModelMap models){
+		 
+		
+		if(!planname.isEmpty()){
+		DepartmentDetails dpts=userdao.getdeptbyid(deptid);System.out.println("ADDPLAN DEPTID: "+deptid);
+		List<DepartmentDetails> dpt = new ArrayList<DepartmentDetails>();
+		dpt.add(dpts);
+		FlightPlanDetails fpdt = new FlightPlanDetails();
+		fpdt.setName(planname);
+	//	fpdt.setStage(stg);
+		fpdt.setDeptdetails(dpt);
+		userdao.saveFPDT(fpdt);
+		}
+		else{
+			models.put("errorplan", "plan name is empty");
+		}
+		return "redirect:viewSearchResult.html?ok=OK&deptid="+deptid;
+		
+	}
+	
+	//assign plan to dept
+	@RequestMapping(value="defaultPlan",method=RequestMethod.GET)
+	public String defaultPlan(@RequestParam int deptid,int planid,ModelMap model){
+		FlightPlanDetails fp= userdao.getflightplanbyid(planid);
+		DepartmentDetails dpt= userdao.getdeptbyid(deptid);
+		dpt.setDeptid(deptid);
+		dpt.setFlpid(fp);
+		fp.setDeptdetail(dpt);
+		userdao.saveDept(dpt);		
+		
+		return "redirect:planHome.html?";
+		
+	}
+	
+	//chkptn ajax
+	@RequestMapping("addchkptuser")
+	public String addchkptuser(@RequestParam int chkptid, HttpSession session){
+		System.out.println("ajax call "+chkptid);
+		String uname = (String) session.getAttribute("username");
+		User stu = userdao.getStudbyname(uname);
+		int planid = (int) session.getAttribute("planid");
+		int stuid = stu.getId();
+				
+		int sizeofchk = userdao.getStudbyname(uname).getChkpt().size();
+		boolean ch = false;
+		for(int i=0;i<sizeofchk;i++){
+	
+			int cck = userdao.getStudbyname(uname).getChkpt().get(i).getCid();
+			if(chkptid==cck){
+				//User stu = userdao.getStudbyname(uname);
+				ch=true;
+				break;
+			}
+		}
+		
+		if(ch==true){
+			ChkPtDetails chk = userdao.getchkptnbyid(chkptid);
+			stu.getChkpt().remove(chk);//add(chk);
+			userdao.saveUser(stu);
+			return "redirect:viewPlan.html?stuid="+stuid+"&planid="+planid;
+		}else{		
+		
+		List <ChkPtDetails> chkpt = userdao.getchkptkbyids(chkptid);
+		List<User> user = userdao.getStuDdetailsbyunmae(uname);
+		
+		ChkPtDetails chk = userdao.getchkptnbyid(chkptid);
+		
+		stu.getChkpt().add(chk);
+		userdao.saveUser(stu);
+		
+		return "redirect:viewPlan.html?stuid="+stuid+"&planid="+planid;
+		}
+	}
+	
+}

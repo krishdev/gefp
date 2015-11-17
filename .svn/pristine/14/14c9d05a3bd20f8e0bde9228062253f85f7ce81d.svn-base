@@ -1,0 +1,135 @@
+package gefp.model;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "FlightPlanDetails")
+public class FlightPlanDetails {
+	@Id
+    @GeneratedValue
+    private Integer id;
+	private String name;
+	
+	private boolean ennabled=false;
+	
+	@OneToOne(mappedBy="flpid")
+	private DepartmentDetails deptdetail;
+	
+	
+	@ManyToMany(cascade=CascadeType.ALL)
+	@JoinTable(name = "departmentdetails_flightplandetails",
+    joinColumns = @JoinColumn(name = "plans_id"),
+    inverseJoinColumns = @JoinColumn(name = "deptdetails_deptid"))
+	private List<DepartmentDetails> deptdetails;
+	
+	@OneToOne(mappedBy="plan")
+	private User user;
+
+	@OneToMany(targetEntity=FP_Stage.class,mappedBy="flpid")
+	private List<FP_Stage> fp_stg = new ArrayList<>();
+
+	@OneToMany(targetEntity=FP_Runway.class,mappedBy="flpid")
+	private List<FP_Runway> fp_run = new ArrayList<>();
+	
+	@OneToMany(targetEntity=Combination.class,mappedBy="flpd")
+	private List<Combination> comb;	
+	
+	public FlightPlanDetails(){
+		
+	}
+	
+	
+	
+	public List<FP_Runway> getFp_run() {
+		return fp_run;
+	}
+
+
+
+	public void setFp_run(List<FP_Runway> fp_run) {
+		this.fp_run = fp_run;
+	}
+
+
+
+	public List<Combination> getComb() {
+		return comb;
+	}
+	public void setComb(List<Combination> comb) {
+		this.comb = comb;
+	}
+	
+	public DepartmentDetails getDeptdetail() {
+		return deptdetail;
+	}
+
+	public void setDeptdetail(DepartmentDetails deptdetail) {
+		this.deptdetail = deptdetail;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public boolean isEnnabled() {
+		return ennabled;
+	}
+
+	public void setEnnabled(boolean ennabled) {
+		this.ennabled = ennabled;
+	}
+
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	
+
+	public List<DepartmentDetails> getDeptdetails() {
+		return deptdetails;
+	}
+
+	public void setDeptdetails(List<DepartmentDetails> deptdetails) {
+		this.deptdetails = deptdetails;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<FP_Stage> getFp_stg() {
+		return fp_stg;
+	}
+
+	public void setFp_stg(List<FP_Stage> fp_stg) {
+		this.fp_stg = fp_stg;
+	}
+
+	
+}
+ 

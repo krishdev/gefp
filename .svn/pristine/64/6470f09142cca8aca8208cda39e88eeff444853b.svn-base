@@ -1,0 +1,95 @@
+package gefp.model;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "RunwayDetails")
+public class RunwayDetails {
+	@Id
+    @GeneratedValue
+    @Column(name="rid")
+    private Integer rid;
+	private String RName;
+	private boolean rdlt=false;
+	
+	@OneToMany(targetEntity=Combination.class,mappedBy="runway")
+	private List<Combination> comb = new ArrayList<>();
+	
+	@OneToMany(targetEntity=FP_Runway.class,mappedBy="runid",cascade=CascadeType.ALL)
+	private List<FP_Runway> fp_run = new ArrayList<>();
+	
+	
+	
+	public RunwayDetails()
+	{
+		
+	}
+
+	
+	
+	public List<FP_Runway> getFp_run() {
+		return fp_run;
+	}
+
+
+
+	public void setFp_run(List<FP_Runway> fp_run) {
+		this.fp_run = fp_run;
+	}
+
+
+
+	public Integer getRid() {
+		return rid;
+	}
+
+
+
+	public void setRid(Integer rid) {
+		this.rid = rid;
+	}
+	public String getRName() {
+		return RName;
+	}
+	
+
+	public void setRName(String rName) {
+		RName = rName;
+	}
+
+	
+
+	public boolean isRdlt() {
+		return rdlt;
+	}
+
+
+
+	public void setRdlt(boolean rdlt) {
+		this.rdlt = rdlt;
+	}
+
+
+
+	public List<Combination> getComb() {
+		return comb;
+	}
+
+
+	public void setComb(List<Combination> comb) {
+		this.comb = comb;
+	}
+	
+	
+}

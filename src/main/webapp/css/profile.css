@@ -1,0 +1,62 @@
+@CHARSET "ISO-8859-1";
+.profile {
+	margin:0px;padding:0px;
+	width:74%;
+	box-shadow: 10px 10px 5px #888888;
+	border:1px solid #ffffff;
+	cursor:default;
+	
+	-moz-border-radius-bottomleft:9px;
+	-webkit-border-bottom-left-radius:9px;
+	border-bottom-left-radius:9px;
+	
+	-moz-border-radius-bottomright:9px;
+	-webkit-border-bottom-right-radius:9px;
+	border-bottom-right-radius:9px;
+	
+	-moz-border-radius-topright:9px;
+	-webkit-border-top-right-radius:9px;
+	border-top-right-radius:9px;
+	
+	-moz-border-radius-topleft:9px;
+	-webkit-border-top-left-radius:9px;
+	border-top-left-radius:9px;
+}.profile table{
+    border-collapse: collapse;
+        border-spacing: 0;
+	width:100%;
+	height:100%;
+	margin:0px;padding:0px;
+}.profile tr:last-child td:last-child {
+	-moz-border-radius-bottomright:9px;
+	-webkit-border-bottom-right-radius:9px;
+	border-bottom-right-radius:9px;
+}
+.profile tr:last-child td:first-child{
+	-moz-border-radius-bottomleft:9px;
+	-webkit-border-bottom-left-radius:9px;
+	border-bottom-left-radius:9px;
+}.profile tr:hover td{
+	
+}
+.profile tr:nth-child(odd){ background-color:#bfa9f9; }
+.profile tr:nth-child(even)    { background-color:#c1daf4; }.profile td{
+	vertical-align:middle;
+	
+	
+	border:1px solid #ffffff;
+	border-width:0px 1px 1px 0px;
+	text-align:left;
+	padding:16px;
+	font-size:16px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#000000;
+}.profile tr:last-child td{
+	border-width:0px 1px 0px 0px;
+}.profile tr td:last-child{
+	border-width:0px 0px 1px 0px;
+}.profile tr:last-child td:last-child{
+	border-width:0px 0px 0px 0px;
+}
+
